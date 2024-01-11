@@ -36,7 +36,7 @@ if(XCODE)
 endif()
 
 if(NOT DEFINED BUILD_ENGINE_DONE) # to test HelloCC into root project
-    set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cocos2d)
+    set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cocos2d-x-4.0)
     set(CMAKE_MODULE_PATH ${COCOS2DX_ROOT_PATH}/cmake/Modules/)
 
     include(CocosBuildSet)
@@ -66,7 +66,7 @@ list(APPEND GAME_HEADER
 
 if(ANDROID)
     # change APP_NAME to the share library name for Android, it's value depend on AndroidManifest.xml
-    set(APP_NAME MyGame)
+    set(APP_NAME HelloCC)
     list(APPEND GAME_SOURCE
          proj.android/app/jni/hellocpp/main.cpp
          )

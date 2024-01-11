@@ -1,28 +1,38 @@
-import org.gradle.internal.os.OperatingSystem
-
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
+    namespace 'com.bbt2000.hellocc'
+    compileSdk 33
+
+    signingConfigs {
+        release {
+            storeFile file('keystore')
+            storePassword 'bbt2000.'
+            keyAlias 'hellocc'
+            keyPassword 'hellocc'
+        }
+    }
 
     defaultConfig {
         applicationId "com.bbt2000.hellocc"
-        minSdkVersion PROP_MIN_SDK_VERSION
-        targetSdkVersion PROP_TARGET_SDK_VERSION
+        minSdkVersion 23
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
         externalNativeBuild {
             cmake {
-                targets 'MyGame'
+                targets 'HelloCC'
                 arguments "-DCMAKE_FIND_ROOT_PATH=", "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DANDROID_ARM_NEON=TRUE"
                 cppFlags "-frtti -fexceptions -fsigned-char"
             }
         }
 
         ndk {
-            abiFilters = []
-            abiFilters.addAll(PROP_APP_ABI.split(':').collect{it as String})
+            //noinspection ChromeOsAbiSupport
+            abiFilters "arm64-v8a"
         }
     }
 
@@ -38,36 +48,26 @@ android {
             path "../../CMakeLists.txt"
         }
     }
-
-    signingConfigs {
-
-       release {
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
-                storeFile file(RELEASE_STORE_FILE)
-                storePassword RELEASE_STORE_PASSWORD
-                keyAlias RELEASE_KEY_ALIAS
-                keyPassword RELEASE_KEY_PASSWORD
-            }
-        }
-    }
+    ndkVersion '23.1.7779620'
 
     buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
         release {
             debuggable false
             jniDebuggable false
             renderscriptDebuggable false
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig signingConfigs.release
-            }
-        }
-
-        debug {
-            debuggable true
-            jniDebuggable true
-            renderscriptDebuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
